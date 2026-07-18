@@ -1,3 +1,5 @@
+import type { DetectionMoment } from './detection-moment';
+
 export type SpinbotSuspicion = {
   playerSteamId: string;
   playerName: string;
@@ -8,5 +10,8 @@ export type SpinbotSuspicion = {
   // could be measured for the player.
   tick: number | null;
   roundNumber: number | null;
+  // One moment per round whose peak rolling-mean yaw crossed the flag threshold (only populated for
+  // flagged players). Empty otherwise.
+  moments: DetectionMoment[];
   isFlagged: boolean;
 };

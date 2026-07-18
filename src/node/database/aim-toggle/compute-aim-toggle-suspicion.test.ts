@@ -63,6 +63,36 @@ describe('computeAimToggleSuspicion', () => {
     expect(result.hotRoundHeadshotRate).toBeCloseTo(0.4);
   });
 
+  it('surfaces one moment per qualifying hot round for a flagged player', () => {
+    // Mediocre baseline (6 / 16 = 0.375) with two isolated near-perfect rounds (the toggle fired
+    // twice). Both qualifying rounds should become moments, ordered by round number.
+    const rounds: RoundKillStats[] = [
+      { roundNumber: 4, killCount: 3, headshotKillCount: 3, headshotTick: 5000 },
+      { roundNumber: 7, killCount: 3, headshotKillCount: 3, headshotTick: 7000 },
+      { roundNumber: 10, killCount: 10, headshotKillCount: 0, headshotTick: null },
+    ];
+
+    const result = computeAimToggleSuspicion(rounds);
+
+    expect(result.isFlagged).toBe(true);
+    expect(result.moments).toHaveLength(2);
+    expect(result.moments.map((moment) => moment.roundNumber)).toEqual([4, 7]);
+    expect(result.moments[0]).toEqual({ tick: 5000, roundNumber: 4, label: 'Round 4 · 100% HS (3 kills)' });
+  });
+
+  it('does not surface moments for a non-flagged player', () => {
+    const rounds: RoundKillStats[] = [
+      { roundNumber: 1, killCount: 4, headshotKillCount: 4, headshotTick: 1000 },
+      { roundNumber: 2, killCount: 4, headshotKillCount: 3, headshotTick: 2000 },
+      { roundNumber: 3, killCount: 4, headshotKillCount: 2, headshotTick: 3000 },
+    ];
+
+    const result = computeAimToggleSuspicion(rounds);
+
+    expect(result.isFlagged).toBe(false);
+    expect(result.moments).toEqual([]);
+  });
+
   it('should not flag a player with no kills', () => {
     const result = computeAimToggleSuspicion([]);
 

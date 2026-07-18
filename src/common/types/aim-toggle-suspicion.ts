@@ -1,3 +1,5 @@
+import type { DetectionMoment } from './detection-moment';
+
 export type AimToggleSuspicion = {
   playerSteamId: string;
   playerName: string;
@@ -16,5 +18,7 @@ export type AimToggleSuspicion = {
   tick: number | null;
   // Mirrors the other detectors' viewer-jump contract; equals hotRoundNumber (the round to open).
   roundNumber: number | null;
+  // One moment per qualifying "hot" round (only populated for flagged players). Empty otherwise.
+  moments: DetectionMoment[];
   isFlagged: boolean;
 };

@@ -1,4 +1,9 @@
 import type { SmokeTrackingSuspicion } from 'csdm/common/types/smoke-tracking-suspicion';
+import { MAX_DETECTION_MOMENTS, type DetectionMoment } from 'csdm/common/types/detection-moment';
+
+// Fallback tickrate used to convert a window duration in ticks into seconds for its label when the
+// real match tickrate is not provided (e.g. unit tests). Every supported CS2/CS:GO demo is 64 tick.
+export const DEFAULT_TICKRATE = 64;
 
 // ---------------------------------------------------------------------------
 // Constants (all validated against the sibling Python project on real demos)
@@ -184,11 +189,14 @@ export type TrackingWindow = {
   startTick: number;
   endTick: number;
   durationTicks: number;
+  // Steam id of the enemy that was tracked through the smoke during this window. Empty when unknown
+  // (only in unit tests that call evaluateWindow directly without passing it).
+  enemySteamId: string;
 };
 
 // Validate a run of consecutive qualifying subsamples against the window rules. Returns the window
 // when it qualifies, otherwise null.
-export function evaluateWindow(roundNumber: number, run: QualifyingSample[]): TrackingWindow | null {
+export function evaluateWindow(roundNumber: number, run: QualifyingSample[], enemySteamId = ''): TrackingWindow | null {
   if (run.length < 2) {
     return null;
   }
@@ -228,6 +236,7 @@ export function evaluateWindow(roundNumber: number, run: QualifyingSample[]): Tr
     startTick: first.tick,
     endTick: last.tick,
     durationTicks,
+    enemySteamId,
   };
 }
 
@@ -300,6 +309,7 @@ export function computeSmokeTrackingSuspicions(
   positions: PositionSample[],
   smokes: SmokeEvent[],
   killTicks: number[],
+  tickrate: number = DEFAULT_TICKRATE,
 ): SmokeTrackingSuspicion[] {
   const isCombatTick = createCombatExclusion(killTicks);
 
@@ -352,7 +362,8 @@ export function computeSmokeTrackingSuspicions(
       if (open === undefined) {
         return;
       }
-      const window = evaluateWindow(roundNumber, open.run);
+      const enemySteamId = key.slice(key.indexOf('|') + 1);
+      const window = evaluateWindow(roundNumber, open.run, enemySteamId);
       if (window !== null) {
         players.get(trackerSteamId)?.windows.push(window);
       }
@@ -429,6 +440,7 @@ export function computeSmokeTrackingSuspicions(
     }
   }
 
+  const effectiveTickrate = tickrate > 0 ? tickrate : DEFAULT_TICKRATE;
   const suspicions: SmokeTrackingSuspicion[] = [];
   for (const accumulator of players.values()) {
     let representativeTick = 0;
@@ -442,13 +454,34 @@ export function computeSmokeTrackingSuspicions(
       }
     }
 
+    const isFlagged = accumulator.windows.length >= MIN_WINDOWS_TO_FLAG;
+    // One moment per qualifying window, ordered chronologically, only for flagged players. The label
+    // names the tracked enemy and the window length in seconds, e.g. "Round 3 · tracked s0ad113 · 1.0s".
+    let moments: DetectionMoment[] = [];
+    if (isFlagged) {
+      moments = accumulator.windows
+        .toSorted((a, b) => a.roundNumber - b.roundNumber || a.startTick - b.startTick)
+        .map((window) => {
+          const enemyName = players.get(window.enemySteamId)?.name || window.enemySteamId;
+          const seconds = (window.durationTicks / effectiveTickrate).toFixed(1);
+
+          return {
+            tick: window.startTick,
+            roundNumber: window.roundNumber,
+            label: `Round ${window.roundNumber} · tracked ${enemyName} · ${seconds}s`,
+          };
+        })
+        .slice(0, MAX_DETECTION_MOMENTS);
+    }
+
     suspicions.push({
       playerSteamId: accumulator.steamId,
       playerName: accumulator.name,
       windowCount: accumulator.windows.length,
       representativeTick,
       roundNumber,
-      isFlagged: accumulator.windows.length >= MIN_WINDOWS_TO_FLAG,
+      moments,
+      isFlagged,
     });
   }
 

@@ -14,6 +14,7 @@ import { Button } from 'csdm/ui/components/buttons/button';
 import type { AntiFlashSuspicion } from 'csdm/common/types/anti-flash-suspicion';
 import { roundNumber } from 'csdm/common/math/round-number';
 import { buildMatch2dViewerRoundPath } from 'csdm/ui/routes-paths';
+import { DetectionMoments } from 'csdm/ui/match/detection-moments';
 
 export function AntiFlash() {
   const client = useWebSocketClient();
@@ -78,28 +79,31 @@ export function AntiFlash() {
           const { tick, roundNumber: representativeRoundNumber } = suspicion;
 
           return (
-            <div key={suspicion.playerSteamId} className="flex items-center border-b border-gray-200 py-8">
-              <p className="w-[240px] selectable truncate" title={suspicion.playerName}>
-                {suspicion.playerName}
-              </p>
-              <p
-                className={clsx('w-[140px] selectable text-right', {
-                  'text-red-700': suspicion.isFlagged,
-                })}
-              >
-                {suspicion.flashedKillCount}
-              </p>
-              <p className="w-[160px] selectable text-right text-gray-800">
-                {roundNumber(suspicion.maxFlashDurationAtKill, 2)}
-              </p>
-              <p className={clsx('w-[120px] text-right', suspicion.isFlagged ? 'text-red-700' : 'text-gray-800')}>
-                {suspicion.isFlagged ? <Trans>Yes</Trans> : <Trans>No</Trans>}
-              </p>
-              <div className="flex w-[120px] justify-end">
-                <Button onClick={() => jumpToViewer(representativeRoundNumber, tick)}>
-                  <Trans>View in 2D</Trans>
-                </Button>
+            <div key={suspicion.playerSteamId} className="flex flex-col gap-8 border-b border-gray-200 py-8">
+              <div className="flex items-center">
+                <p className="w-[240px] selectable truncate" title={suspicion.playerName}>
+                  {suspicion.playerName}
+                </p>
+                <p
+                  className={clsx('w-[140px] selectable text-right', {
+                    'text-red-700': suspicion.isFlagged,
+                  })}
+                >
+                  {suspicion.flashedKillCount}
+                </p>
+                <p className="w-[160px] selectable text-right text-gray-800">
+                  {roundNumber(suspicion.maxFlashDurationAtKill, 2)}
+                </p>
+                <p className={clsx('w-[120px] text-right', suspicion.isFlagged ? 'text-red-700' : 'text-gray-800')}>
+                  {suspicion.isFlagged ? <Trans>Yes</Trans> : <Trans>No</Trans>}
+                </p>
+                <div className="flex w-[120px] justify-end">
+                  <Button onClick={() => jumpToViewer(representativeRoundNumber, tick)}>
+                    <Trans>View in 2D</Trans>
+                  </Button>
+                </div>
               </div>
+              {suspicion.isFlagged && <DetectionMoments moments={suspicion.moments} onJump={jumpToViewer} />}
             </div>
           );
         })}

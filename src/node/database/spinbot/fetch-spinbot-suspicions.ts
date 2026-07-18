@@ -1,7 +1,12 @@
 import { sql } from 'kysely';
 import { db } from '../database';
 import type { SpinbotSuspicion } from 'csdm/common/types/spinbot-suspicion';
-import { computeSpinbotSuspicion, SPINBOT_ROLLING_WINDOW_TICKS } from './compute-spinbot-suspicion';
+import { MAX_DETECTION_MOMENTS, type DetectionMoment } from 'csdm/common/types/detection-moment';
+import {
+  computeSpinbotSuspicion,
+  SPINBOT_ROLLING_WINDOW_TICKS,
+  SPINBOT_SUSPICIOUS_YAW_DELTA_DEGREES,
+} from './compute-spinbot-suspicion';
 
 export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotSuspicion[]> {
   // Number of preceding ticks included in the rolling-mean window (window size minus the
@@ -66,6 +71,9 @@ export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotS
         )} PRECEDING AND CURRENT ROW)`.as('rolling_mean'),
       ]);
     })
+    // One row per (player, round): the round's peak rolling mean and the tick where it peaked, plus
+    // the round's live-play tick count. Aggregated per player in TS so each qualifying round becomes
+    // a distinct moment while the representative moment is still the global peak.
     .selectFrom('rolling')
     .leftJoin('steam_account_overrides', 'steam_account_overrides.steam_id', 'rolling.player_steam_id')
     .select([
@@ -73,41 +81,72 @@ export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotS
       (eb) => {
         return eb.fn.coalesce('steam_account_overrides.name', 'rolling.player_name').as('playerName');
       },
-      sql<number>`COUNT(*)`.as('aliveTickCount'),
-      sql<number>`COALESCE(MAX(rolling.rolling_mean), 0)`.as('maxRollingMeanYawDelta'),
-      // Representative moment = the tick where the rolling mean peaks (the center of the most
-      // sustained spin), and its round. ARRAY_AGG ordered by the rolling mean mirrors how the
-      // other detectors pick their representative tick. Ties break on the earliest tick. NULL
-      // when the player has no measurable live-play delta.
+      'rolling.round_number as roundNumber',
+      sql<number>`COUNT(*)`.as('tickCount'),
+      sql<number>`COALESCE(MAX(rolling.rolling_mean), 0)`.as('roundMaxRollingMean'),
+      // Tick where the rolling mean peaks within the round (ties break on the earliest tick).
       sql<number | null>`(ARRAY_AGG(rolling.tick ORDER BY rolling.rolling_mean DESC NULLS LAST, rolling.tick))[1]`.as(
-        'tick',
-      ),
-      sql<
-        number | null
-      >`(ARRAY_AGG(rolling.round_number ORDER BY rolling.rolling_mean DESC NULLS LAST, rolling.tick))[1]`.as(
-        'roundNumber',
+        'peakTick',
       ),
     ])
-    .groupBy(['rolling.player_steam_id', 'playerName'])
+    .groupBy(['rolling.player_steam_id', 'playerName', 'rolling.round_number'])
     .orderBy('rolling.player_steam_id')
+    .orderBy('rolling.round_number')
     .execute();
 
-  const suspicions: SpinbotSuspicion[] = rows.map((row) => {
+  type PlayerRow = (typeof rows)[number];
+  const playersBySteamId = new Map<string, { playerName: string; rounds: PlayerRow[] }>();
+  for (const row of rows) {
+    let player = playersBySteamId.get(row.playerSteamId);
+    if (player === undefined) {
+      player = { playerName: row.playerName, rounds: [] };
+      playersBySteamId.set(row.playerSteamId, player);
+    }
+    player.rounds.push(row);
+  }
+
+  const suspicions: SpinbotSuspicion[] = [];
+  for (const [playerSteamId, player] of playersBySteamId) {
+    const aliveTickCount = player.rounds.reduce((total, round) => total + round.tickCount, 0);
+    const peakRound = player.rounds.reduce((best, round) => {
+      return round.roundMaxRollingMean > best.roundMaxRollingMean ? round : best;
+    }, player.rounds[0]);
+
     const { maxRollingMeanYawDelta, isFlagged } = computeSpinbotSuspicion(
-      row.aliveTickCount,
-      row.maxRollingMeanYawDelta,
+      aliveTickCount,
+      peakRound.roundMaxRollingMean,
     );
 
-    return {
-      playerSteamId: row.playerSteamId,
-      playerName: row.playerName,
-      aliveTickCount: row.aliveTickCount,
+    // One moment per round whose peak rolling mean crossed the flag threshold (only for flagged
+    // players), highest peak first. Label e.g. "Round 12 · 63.9°/tick".
+    let moments: DetectionMoment[] = [];
+    if (isFlagged) {
+      moments = player.rounds
+        .filter((round) => round.roundMaxRollingMean >= SPINBOT_SUSPICIOUS_YAW_DELTA_DEGREES && round.peakTick !== null)
+        .toSorted((a, b) => b.roundMaxRollingMean - a.roundMaxRollingMean || a.roundNumber - b.roundNumber)
+        .map((round) => {
+          return {
+            tick: round.peakTick as number,
+            roundNumber: round.roundNumber,
+            label: `Round ${round.roundNumber} · ${round.roundMaxRollingMean.toFixed(1)}°/tick`,
+          };
+        })
+        .slice(0, MAX_DETECTION_MOMENTS);
+    }
+
+    suspicions.push({
+      playerSteamId,
+      playerName: player.playerName,
+      aliveTickCount,
       maxRollingMeanYawDelta,
-      tick: row.tick,
-      roundNumber: row.roundNumber,
+      tick: peakRound.peakTick,
+      roundNumber: peakRound.roundNumber,
+      moments,
       isFlagged,
-    };
-  });
+    });
+  }
+
+  suspicions.sort((a, b) => a.playerSteamId.localeCompare(b.playerSteamId));
 
   return suspicions;
 }

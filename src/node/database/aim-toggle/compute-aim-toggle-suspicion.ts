@@ -1,3 +1,5 @@
+import { MAX_DETECTION_MOMENTS, type DetectionMoment } from 'csdm/common/types/detection-moment';
+
 // Minimum number of kills a round must contain for its headshot rate to be trusted. Below this a
 // 100% headshot round is just one or two lucky headshots, not a signal. Keeping it at three means a
 // "hot" round is at least 3/3 headshots.
@@ -27,6 +29,9 @@ export type AimToggleSuspicionScore = {
   hotRoundNumber: number | null;
   hotRoundHeadshotRate: number;
   tick: number | null;
+  // One moment per qualifying "hot" round (>= MIN_ROUND_KILLS kills, >= HOT_ROUND_MIN headshot rate,
+  // with a headshot tick to jump to). Only populated when the player is flagged. Empty otherwise.
+  moments: DetectionMoment[];
   isFlagged: boolean;
 };
 
@@ -66,11 +71,37 @@ export function computeAimToggleSuspicion(rounds: RoundKillStats[]): AimToggleSu
   const hasHotRound = hotRoundNumber !== null && hotRoundHeadshotRate >= HOT_ROUND_MIN;
   const isFlagged = baselineHeadshotRate <= BASELINE_MAX && hasHotRound;
 
+  // Every qualifying near-perfect round becomes a clickable moment (only surfaced for flagged
+  // players). Ordered by round number, e.g. "Round 12 · 100% HS (3 kills)".
+  let moments: DetectionMoment[] = [];
+  if (isFlagged) {
+    moments = rounds
+      .filter((round) => {
+        return (
+          round.killCount >= MIN_ROUND_KILLS &&
+          round.headshotTick !== null &&
+          round.headshotKillCount / round.killCount >= HOT_ROUND_MIN
+        );
+      })
+      .toSorted((a, b) => a.roundNumber - b.roundNumber)
+      .map((round) => {
+        const headshotPercentage = Math.round((round.headshotKillCount / round.killCount) * 100);
+
+        return {
+          tick: round.headshotTick as number,
+          roundNumber: round.roundNumber,
+          label: `Round ${round.roundNumber} · ${headshotPercentage}% HS (${round.killCount} kills)`,
+        };
+      })
+      .slice(0, MAX_DETECTION_MOMENTS);
+  }
+
   return {
     baselineHeadshotRate,
     hotRoundNumber,
     hotRoundHeadshotRate,
     tick,
+    moments,
     isFlagged,
   };
 }

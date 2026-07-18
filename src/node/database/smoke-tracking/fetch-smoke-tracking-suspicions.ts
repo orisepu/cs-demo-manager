@@ -18,6 +18,7 @@ async function fetchCachedSuspicions(checksum: string): Promise<SmokeTrackingSus
       's.window_count as windowCount',
       's.representative_tick as representativeTick',
       's.round_number as roundNumber',
+      's.moments as moments',
       's.is_flagged as isFlagged',
     ])
     .where('s.match_checksum', '=', checksum)
@@ -32,6 +33,7 @@ async function fetchCachedSuspicions(checksum: string): Promise<SmokeTrackingSus
       windowCount: row.windowCount,
       representativeTick: row.representativeTick,
       roundNumber: row.roundNumber,
+      moments: row.moments,
       isFlagged: row.isFlagged,
     };
   });
@@ -76,6 +78,10 @@ async function computeAndCacheSuspicions(checksum: string): Promise<SmokeTrackin
     .where('round_number', '>=', 1)
     .execute();
 
+  // Tickrate lives on the demo (joined to the match by checksum). Used to turn window durations into
+  // seconds for the moment labels. Falls back to the compute default when the demo row is missing.
+  const demoRow = await db.selectFrom('demos').select(['tickrate']).where('checksum', '=', checksum).executeTakeFirst();
+
   const positions: PositionSample[] = positionRows.map((row) => {
     return {
       tick: row.tick,
@@ -97,7 +103,7 @@ async function computeAndCacheSuspicions(checksum: string): Promise<SmokeTrackin
   });
   const killTicks = killRows.map((row) => row.tick);
 
-  const suspicions = computeSmokeTrackingSuspicions(positions, smokes, killTicks);
+  const suspicions = computeSmokeTrackingSuspicions(positions, smokes, killTicks, demoRow?.tickrate);
 
   if (suspicions.length > 0) {
     await db
@@ -111,6 +117,7 @@ async function computeAndCacheSuspicions(checksum: string): Promise<SmokeTrackin
             window_count: suspicion.windowCount,
             representative_tick: suspicion.representativeTick,
             round_number: suspicion.roundNumber,
+            moments: JSON.stringify(suspicion.moments),
             is_flagged: suspicion.isFlagged,
           };
         }),

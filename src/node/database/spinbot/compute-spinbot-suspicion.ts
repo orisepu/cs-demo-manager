@@ -9,7 +9,7 @@ export const SPINBOT_ROLLING_WINDOW_TICKS = 14;
 // flagged as a suspected spinbot. A human never sustains anything close to this over a full
 // window; a spinbot sits far above it. Validated against real demos: clean players peaked in
 // the single digits / low tens while nothing legit reaches this threshold.
-const SPINBOT_SUSPICIOUS_YAW_DELTA_DEGREES = 45;
+export const SPINBOT_SUSPICIOUS_YAW_DELTA_DEGREES = 45;
 
 export type SpinbotSuspicionScore = {
   maxRollingMeanYawDelta: number;

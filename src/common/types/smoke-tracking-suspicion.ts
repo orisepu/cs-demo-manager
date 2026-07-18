@@ -1,3 +1,5 @@
+import type { DetectionMoment } from './detection-moment';
+
 export type SmokeTrackingSuspicion = {
   playerSteamId: string;
   playerName: string;
@@ -7,5 +9,7 @@ export type SmokeTrackingSuspicion = {
   // viewer straight to the most incriminating moment. Both are 0 when the player has no window.
   representativeTick: number;
   roundNumber: number;
+  // One moment per qualifying window (only populated for flagged players). Empty otherwise.
+  moments: DetectionMoment[];
   isFlagged: boolean;
 };

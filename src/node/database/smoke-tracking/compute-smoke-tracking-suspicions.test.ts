@@ -283,6 +283,32 @@ describe('computeSmokeTrackingSuspicions', () => {
     expect(tracker?.isFlagged).toBe(true);
   });
 
+  it('surfaces one moment per window for a flagged player', () => {
+    const smokeRound1: SmokeEvent = { roundNumber: 1, tick: 0, x: 1000, y: 0, z: 0 };
+    const smokeRound2: SmokeEvent = { roundNumber: 2, tick: 0, x: 1000, y: 0, z: 0 };
+    const positions = [...buildTrackingRound(1, [8, 16, 24]), ...buildTrackingRound(2, [8, 16, 24])];
+    const suspicions = computeSmokeTrackingSuspicions(positions, [smokeRound1, smokeRound2], []);
+    const tracker = suspicions.find((suspicion) => suspicion.playerSteamId === 'tracker');
+    expect(tracker?.isFlagged).toBe(true);
+    expect(tracker?.windowCount).toBe(2);
+    // Two windows -> two moments, one per window, ordered chronologically by round.
+    expect(tracker?.moments).toHaveLength(2);
+    expect(tracker?.moments.map((moment) => moment.roundNumber)).toEqual([1, 2]);
+    for (const moment of tracker?.moments ?? []) {
+      expect(moment.tick).toBe(8);
+      expect(moment.label).toContain('tracked Enemy');
+    }
+  });
+
+  it('does not surface moments for a player below the flag threshold', () => {
+    const positions = buildTrackingRound(1, [8, 16, 24]);
+    const suspicions = computeSmokeTrackingSuspicions(positions, [SMOKE], []);
+    const tracker = suspicions.find((suspicion) => suspicion.playerSteamId === 'tracker');
+    expect(tracker?.isFlagged).toBe(false);
+    expect(tracker?.windowCount).toBe(1);
+    expect(tracker?.moments).toEqual([]);
+  });
+
   it('uses the start of the longest window as the representative moment', () => {
     // Round 1 window has 3 samples (duration 16); round 2 window has 4 samples (duration 24).
     const smokeRound1: SmokeEvent = { roundNumber: 1, tick: 0, x: 1000, y: 0, z: 0 };

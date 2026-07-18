@@ -1,3 +1,5 @@
+import type { DetectionMoment } from './detection-moment';
+
 export type AntiAimSuspicion = {
   playerSteamId: string;
   playerName: string;
@@ -8,5 +10,7 @@ export type AntiAimSuspicion = {
   // jump the 2D viewer there. Null when the player has no suspicious tick at all.
   tick: number | null;
   roundNumber: number | null;
+  // One moment per round with extreme-pitch ticks (only populated for flagged players). Empty otherwise.
+  moments: DetectionMoment[];
   isFlagged: boolean;
 };

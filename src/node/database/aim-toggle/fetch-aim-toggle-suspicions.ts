@@ -55,9 +55,8 @@ export async function fetchAimToggleSuspicions(checksum: string): Promise<AimTog
   const suspicions: AimToggleSuspicion[] = [];
   for (const player of playersBySteamId.values()) {
     const killCount = player.rounds.reduce((total, round) => total + round.killCount, 0);
-    const { baselineHeadshotRate, hotRoundNumber, hotRoundHeadshotRate, tick, isFlagged } = computeAimToggleSuspicion(
-      player.rounds,
-    );
+    const { baselineHeadshotRate, hotRoundNumber, hotRoundHeadshotRate, tick, moments, isFlagged } =
+      computeAimToggleSuspicion(player.rounds);
 
     suspicions.push({
       playerSteamId: player.playerSteamId,
@@ -68,6 +67,7 @@ export async function fetchAimToggleSuspicions(checksum: string): Promise<AimTog
       hotRoundHeadshotRate,
       tick,
       roundNumber: hotRoundNumber,
+      moments,
       isFlagged,
     });
   }
