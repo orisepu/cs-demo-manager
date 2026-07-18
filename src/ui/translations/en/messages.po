@@ -1476,6 +1476,7 @@ msgid "All"
 msgstr "All"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
 #: src/ui/match/smoke-tracking/smoke-tracking.tsx
@@ -1486,6 +1487,7 @@ msgid "Yes"
 msgstr "Yes"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
 #: src/ui/match/smoke-tracking/smoke-tracking.tsx
@@ -1511,6 +1513,7 @@ msgid "Opening duel result"
 msgstr "Opening duel result"
 
 #: src/ui/components/inputs/select/perspective-select.tsx
+#: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
 #: src/ui/match/smoke-tracking/smoke-tracking.tsx
@@ -3758,6 +3761,47 @@ msgctxt "Tooltip"
 msgid "Videos"
 msgstr "Videos"
 
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "An error occurred while fetching aim-toggle suspicions."
+msgstr "An error occurred while fetching aim-toggle suspicions."
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+msgid "No kill data found for this match."
+msgstr "No kill data found for this match."
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Statistical triage signal, not proof: it flags a mediocre overall headshot rate paired with an isolated near-perfect round, a shape consistent with toggling a headshot aimbot on and off. Review the flagged round before drawing any conclusion."
+msgstr "Statistical triage signal, not proof: it flags a mediocre overall headshot rate paired with an isolated near-perfect round, a shape consistent with toggling a headshot aimbot on and off. Review the flagged round before drawing any conclusion."
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Baseline HS %"
+msgstr "Baseline HS %"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Hot round"
+msgstr "Hot round"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Hot round HS %"
+msgstr "Hot round HS %"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "Flagged"
+msgstr "Flagged"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "View in 2D"
+msgstr "View in 2D"
+
 #: src/ui/match/anti-aim/anti-aim.tsx
 msgid "An error occurred while fetching anti-aim suspicions."
 msgstr "An error occurred while fetching anti-aim suspicions."
@@ -3771,27 +3815,9 @@ msgstr "No player position data found for this match."
 msgid "Suspicious ticks %"
 msgstr "Suspicious ticks %"
 
-#: src/ui/match/anti-aim/anti-aim.tsx
-#: src/ui/match/anti-flash/anti-flash.tsx
-#: src/ui/match/smoke-tracking/smoke-tracking.tsx
-#: src/ui/match/spinbot/spinbot.tsx
-msgid "Flagged"
-msgstr "Flagged"
-
-#: src/ui/match/anti-aim/anti-aim.tsx
-#: src/ui/match/anti-flash/anti-flash.tsx
-#: src/ui/match/smoke-tracking/smoke-tracking.tsx
-#: src/ui/match/spinbot/spinbot.tsx
-msgid "View in 2D"
-msgstr "View in 2D"
-
 #: src/ui/match/anti-flash/anti-flash.tsx
 msgid "An error occurred while fetching anti-flash suspicions."
 msgstr "An error occurred while fetching anti-flash suspicions."
-
-#: src/ui/match/anti-flash/anti-flash.tsx
-msgid "No kill data found for this match."
-msgstr "No kill data found for this match."
 
 #: src/ui/match/anti-flash/anti-flash.tsx
 msgid "Flashed kills"
@@ -4338,6 +4364,11 @@ msgstr "Anti-flash"
 msgctxt "Tab link"
 msgid "Smoke tracking"
 msgstr "Smoke tracking"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Aim toggle"
+msgstr "Aim toggle"
 
 #: src/ui/match/match-tabs.tsx
 msgctxt "Tab link"
