@@ -42,6 +42,7 @@ import type { PlayerPositionTable } from './player-position/player-position-tabl
 import type { RoundTable } from './rounds/round-table';
 import type { ShotTable } from './shots/shot-table';
 import type { SmokeStartTable } from './smoke-started/smoke-start-table';
+import type { SmokeTrackingSuspicionTable } from './smoke-tracking/smoke-tracking-suspicion-table';
 import type { IgnoredSteamAccountTable } from './steam-accounts/ignored-steam-account-table';
 import type { SteamAccountOverridesTable } from './steam-accounts/steam-account-overrides-table';
 import type { SteamAccountTable } from './steam-accounts/steam-account-table';
@@ -107,6 +108,7 @@ export type Database = {
   rounds: RoundTable;
   shots: ShotTable;
   smokes_start: SmokeStartTable;
+  smoke_tracking_suspicions: SmokeTrackingSuspicionTable;
   steam_accounts: SteamAccountTable;
   steam_account_overrides: SteamAccountOverridesTable;
   steam_account_tags: SteamAccountTagTable;

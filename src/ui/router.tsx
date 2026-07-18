@@ -26,6 +26,7 @@ import { Economy } from 'csdm/ui/match/economy/economy';
 import { AntiAim } from 'csdm/ui/match/anti-aim/anti-aim';
 import { Spinbot } from 'csdm/ui/match/spinbot/spinbot';
 import { AntiFlash } from 'csdm/ui/match/anti-flash/anti-flash';
+import { SmokeTracking } from 'csdm/ui/match/smoke-tracking/smoke-tracking';
 import { Weapons } from 'csdm/ui/match/weapons/weapons';
 import { LastMatchesLoader as ValveLastMatchesLoader } from 'csdm/ui/downloads/valve/last-matches-loader';
 import { PendingDownloads } from 'csdm/ui/downloads/pending/pending-downloads';
@@ -92,6 +93,7 @@ export const router = createHashRouter(
         <Route path={RoutePath.MatchAntiAim} element={<AntiAim />} />
         <Route path={RoutePath.MatchSpinbot} element={<Spinbot />} />
         <Route path={RoutePath.MatchAntiFlash} element={<AntiFlash />} />
+        <Route path={RoutePath.MatchSmokeTracking} element={<SmokeTracking />} />
       </Route>
       <Route path={RoutePath.Demos} element={<Demos />} />
       <Route path={`${RoutePath.Demos}/:path`} element={<DemoLoader />} />

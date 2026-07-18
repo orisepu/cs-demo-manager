@@ -16,6 +16,7 @@ export const RendererClientMessageName = {
   FetchAntiAimSuspicions: 'fetch-anti-aim-suspicions',
   FetchSpinbotSuspicions: 'fetch-spinbot-suspicions',
   FetchAntiFlashSuspicions: 'fetch-anti-flash-suspicions',
+  FetchSmokeTrackingSuspicions: 'fetch-smoke-tracking-suspicions',
   UpdateComment: 'update-match-comment',
   UpdatePlayerComment: 'update-player-comment',
   UpdateRoundComment: 'update-round-comment',

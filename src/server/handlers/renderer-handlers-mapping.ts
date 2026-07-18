@@ -17,6 +17,8 @@ import { fetchSpinbotSuspicionsHandler } from './renderer-process/match/fetch-sp
 import type { SpinbotSuspicion } from 'csdm/common/types/spinbot-suspicion';
 import { fetchAntiFlashSuspicionsHandler } from './renderer-process/match/fetch-anti-flash-suspicions-handler';
 import type { AntiFlashSuspicion } from 'csdm/common/types/anti-flash-suspicion';
+import { fetchSmokeTrackingSuspicionsHandler } from './renderer-process/match/fetch-smoke-tracking-suspicions-handler';
+import type { SmokeTrackingSuspicion } from 'csdm/common/types/smoke-tracking-suspicion';
 import type {
   Fetch2dViewerDataPayload,
   Fetch2dViewerDataSuccessPayload,
@@ -312,6 +314,7 @@ export interface RendererMessageHandlers {
   [RendererClientMessageName.FetchAntiAimSuspicions]: Handler<string, AntiAimSuspicion[]>;
   [RendererClientMessageName.FetchSpinbotSuspicions]: Handler<string, SpinbotSuspicion[]>;
   [RendererClientMessageName.FetchAntiFlashSuspicions]: Handler<string, AntiFlashSuspicion[]>;
+  [RendererClientMessageName.FetchSmokeTrackingSuspicions]: Handler<string, SmokeTrackingSuspicion[]>;
   [RendererClientMessageName.FetchMatchGrenadesThrow]: Handler<string, GrenadeThrow[]>;
   [RendererClientMessageName.WatchDemo]: Handler<WatchDemoPayload, WatchDemoErrorPayload | undefined>;
   [RendererClientMessageName.StartCounterStrike]: Handler<
@@ -439,6 +442,7 @@ export const rendererHandlers: RendererMessageHandlers = {
   [RendererClientMessageName.FetchAntiAimSuspicions]: fetchAntiAimSuspicionsHandler,
   [RendererClientMessageName.FetchSpinbotSuspicions]: fetchSpinbotSuspicionsHandler,
   [RendererClientMessageName.FetchAntiFlashSuspicions]: fetchAntiFlashSuspicionsHandler,
+  [RendererClientMessageName.FetchSmokeTrackingSuspicions]: fetchSmokeTrackingSuspicionsHandler,
   [RendererClientMessageName.FetchMatchGrenadesThrow]: fetchMatchGrenadesThrowHandler,
   [RendererClientMessageName.StartCounterStrike]: startCounterStrikeHandler,
   [RendererClientMessageName.WatchDemo]: watchDemoHandler,
