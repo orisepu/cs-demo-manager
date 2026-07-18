@@ -8,6 +8,7 @@ export type PlayerPosition = BaseEvent & {
   y: number;
   z: number;
   yaw: number;
+  pitch: number;
   flashDurationRemaining: number;
   side: TeamNumber;
   money: number;

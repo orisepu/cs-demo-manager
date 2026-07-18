@@ -43,6 +43,7 @@ export async function fetchPlayersPositions(checksum: string, roundNumber: numbe
       'p.x',
       'p.y',
       'p.yaw',
+      'p.pitch',
       'p.z',
     ])
     .where('match_checksum', '=', checksum)

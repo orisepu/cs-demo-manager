@@ -23,6 +23,7 @@ export function playerPositionRowToPlayerPosition(row: PlayerPositionRow): Playe
     y: row.y,
     z: row.z,
     yaw: row.yaw,
+    pitch: row.pitch,
     flashDurationRemaining: row.flash_duration_remaining,
     side: row.side,
     health: row.health,

@@ -21,6 +21,7 @@ async function insertPlayersPositions({ outputFolderPath, demoName, databaseSett
       'y',
       'z',
       'yaw',
+      'pitch',
       'flash_duration_remaining',
       'side',
       'money',

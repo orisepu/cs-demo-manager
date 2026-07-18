@@ -15,6 +15,7 @@ export type PlayerPositionTable = {
   y: number;
   z: number;
   yaw: number;
+  pitch: number;
   flash_duration_remaining: number;
   side: TeamNumber;
   health: number;
