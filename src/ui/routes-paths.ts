@@ -14,6 +14,7 @@ export const RoutePath = {
   MatchVideo: 'video',
   MatchChat: 'chat',
   MatchEconomy: 'economy',
+  MatchAntiAim: 'anti-aim',
   Analyses: '/analyses',
   Players: '/players',
   PlayerCharts: 'charts',

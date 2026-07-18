@@ -11,6 +11,8 @@ import type { FetchMatchesTablePayload } from './renderer-process/match/fetch-ma
 import { fetchMatchesTableHandler } from './renderer-process/match/fetch-matches-table-handler';
 import { fetchMatchByChecksumHandler } from './renderer-process/match/fetch-match-by-checksum-handler';
 import { fetchMatchHeatmapPointsHandler } from './renderer-process/match/fetch-match-heatmap-points-handler';
+import { fetchAntiAimSuspicionsHandler } from './renderer-process/match/fetch-anti-aim-suspicions-handler';
+import type { AntiAimSuspicion } from 'csdm/common/types/anti-aim-suspicion';
 import type {
   Fetch2dViewerDataPayload,
   Fetch2dViewerDataSuccessPayload,
@@ -303,6 +305,7 @@ export interface RendererMessageHandlers {
   [RendererClientMessageName.RemoveVideosFromQueue]: Handler<string[]>;
   [RendererClientMessageName.FetchMatchFlashbangMatrixRows]: Handler<string, FlashbangMatrixRow[]>;
   [RendererClientMessageName.FetchMatchDuelsMatrixRows]: Handler<string, DuelMatrixRow[]>;
+  [RendererClientMessageName.FetchAntiAimSuspicions]: Handler<string, AntiAimSuspicion[]>;
   [RendererClientMessageName.FetchMatchGrenadesThrow]: Handler<string, GrenadeThrow[]>;
   [RendererClientMessageName.WatchDemo]: Handler<WatchDemoPayload, WatchDemoErrorPayload | undefined>;
   [RendererClientMessageName.StartCounterStrike]: Handler<
@@ -427,6 +430,7 @@ export const rendererHandlers: RendererMessageHandlers = {
   [RendererClientMessageName.RemoveVideosFromQueue]: removeVideosFromQueueHandler,
   [RendererClientMessageName.FetchMatchFlashbangMatrixRows]: fetchMatchFlashbangMatrixRowsHandler,
   [RendererClientMessageName.FetchMatchDuelsMatrixRows]: fetchMatchDuelsMatrixRowsHandler,
+  [RendererClientMessageName.FetchAntiAimSuspicions]: fetchAntiAimSuspicionsHandler,
   [RendererClientMessageName.FetchMatchGrenadesThrow]: fetchMatchGrenadesThrowHandler,
   [RendererClientMessageName.StartCounterStrike]: startCounterStrikeHandler,
   [RendererClientMessageName.WatchDemo]: watchDemoHandler,

@@ -23,6 +23,7 @@ import { Viewer2DLoader } from 'csdm/ui/match/viewer-2d/viewer-2d-loader';
 import { VideoLoader } from 'csdm/ui/match/video/video-loader';
 import { ChatMessages } from 'csdm/ui/match/chat-messages/chat-messages';
 import { Economy } from 'csdm/ui/match/economy/economy';
+import { AntiAim } from 'csdm/ui/match/anti-aim/anti-aim';
 import { Weapons } from 'csdm/ui/match/weapons/weapons';
 import { LastMatchesLoader as ValveLastMatchesLoader } from 'csdm/ui/downloads/valve/last-matches-loader';
 import { PendingDownloads } from 'csdm/ui/downloads/pending/pending-downloads';
@@ -86,6 +87,7 @@ export const router = createHashRouter(
         <Route path={RoutePath.MatchVideo} element={<VideoLoader />} />
         <Route path={RoutePath.MatchChat} element={<ChatMessages />} />
         <Route path={RoutePath.MatchEconomy} element={<Economy />} />
+        <Route path={RoutePath.MatchAntiAim} element={<AntiAim />} />
       </Route>
       <Route path={RoutePath.Demos} element={<Demos />} />
       <Route path={`${RoutePath.Demos}/:path`} element={<DemoLoader />} />
