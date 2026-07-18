@@ -4827,6 +4827,10 @@ msgid "Player not found."
 msgstr "Player not found."
 
 #: src/ui/match/players/match-players.tsx
+msgid "Possible cheater"
+msgstr "Possible cheater"
+
+#: src/ui/match/players/match-players.tsx
 #: src/ui/match/rounds/round/players-information.tsx
 #: src/ui/match/weapons/weapons-accuracy.tsx
 msgid "Kills"
