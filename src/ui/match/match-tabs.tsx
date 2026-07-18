@@ -69,6 +69,9 @@ export function MatchTabs() {
       <TabLink url={RoutePath.MatchAntiAim}>
         <Trans context="Tab link">Anti-aim</Trans>
       </TabLink>
+      <TabLink url={RoutePath.MatchSpinbot}>
+        <Trans context="Tab link">Spinbot</Trans>
+      </TabLink>
       <TabLink url={RoutePath.Match2dViewer} end={false}>
         <Trans context="Tab link">2D viewer</Trans>
       </TabLink>

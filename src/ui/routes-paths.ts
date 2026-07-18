@@ -15,6 +15,7 @@ export const RoutePath = {
   MatchChat: 'chat',
   MatchEconomy: 'economy',
   MatchAntiAim: 'anti-aim',
+  MatchSpinbot: 'spinbot',
   Analyses: '/analyses',
   Players: '/players',
   PlayerCharts: 'charts',
