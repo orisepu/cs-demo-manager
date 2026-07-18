@@ -24,6 +24,19 @@ export async function fetchAntiAimSuspicions(checksum: string): Promise<AntiAimS
       sql<number>`COUNT(*) FILTER (WHERE ABS(p.pitch) > ${SUSPICIOUS_PITCH_ABSOLUTE_DEGREES})`.as(
         'suspiciousTickCount',
       ),
+      // Representative moment = the suspicious tick with the most extreme pitch (mirrors the
+      // anti-flash detector's ARRAY_AGG pick). Returning its tick and round lets the UI jump the
+      // 2D viewer straight to the most incriminating moment. NULL when no suspicious tick exists.
+      sql<
+        number | null
+      >`(ARRAY_AGG(p.tick ORDER BY ABS(p.pitch) DESC, p.tick) FILTER (WHERE ABS(p.pitch) > ${SUSPICIOUS_PITCH_ABSOLUTE_DEGREES}))[1]`.as(
+        'tick',
+      ),
+      sql<
+        number | null
+      >`(ARRAY_AGG(p.round_number ORDER BY ABS(p.pitch) DESC, p.tick) FILTER (WHERE ABS(p.pitch) > ${SUSPICIOUS_PITCH_ABSOLUTE_DEGREES}))[1]`.as(
+        'roundNumber',
+      ),
     ])
     .groupBy(['p.player_steam_id', 'playerName'])
     .orderBy('p.player_steam_id')
@@ -38,6 +51,8 @@ export async function fetchAntiAimSuspicions(checksum: string): Promise<AntiAimS
       aliveTickCount: row.aliveTickCount,
       suspiciousTickCount: row.suspiciousTickCount,
       suspiciousFraction,
+      tick: row.tick,
+      roundNumber: row.roundNumber,
       isFlagged,
     };
   });

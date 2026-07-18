@@ -54,15 +54,17 @@ export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotS
     // consecutive ticks, partitioned so the window never crosses a player or round boundary.
     // A spinbot sustains a high value across the whole window; a one-off flick is diluted.
     .with('rolling', (db) => {
-      return db
-        .selectFrom('gated')
-        .select([
-          'player_steam_id',
-          'player_name',
-          sql<number>`AVG(yaw_delta) OVER (PARTITION BY player_steam_id, round_number ORDER BY tick ROWS BETWEEN ${sql.raw(
-            String(precedingTicks),
-          )} PRECEDING AND CURRENT ROW)`.as('rolling_mean'),
-        ]);
+      return db.selectFrom('gated').select([
+        'player_steam_id',
+        'player_name',
+        // Carry the round and tick of each windowed row through so the final aggregate can
+        // recover WHERE the rolling-mean peak occurred, not just its value.
+        'round_number',
+        'tick',
+        sql<number>`AVG(yaw_delta) OVER (PARTITION BY player_steam_id, round_number ORDER BY tick ROWS BETWEEN ${sql.raw(
+          String(precedingTicks),
+        )} PRECEDING AND CURRENT ROW)`.as('rolling_mean'),
+      ]);
     })
     .selectFrom('rolling')
     .leftJoin('steam_account_overrides', 'steam_account_overrides.steam_id', 'rolling.player_steam_id')
@@ -73,6 +75,18 @@ export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotS
       },
       sql<number>`COUNT(*)`.as('aliveTickCount'),
       sql<number>`COALESCE(MAX(rolling.rolling_mean), 0)`.as('maxRollingMeanYawDelta'),
+      // Representative moment = the tick where the rolling mean peaks (the center of the most
+      // sustained spin), and its round. ARRAY_AGG ordered by the rolling mean mirrors how the
+      // other detectors pick their representative tick. Ties break on the earliest tick. NULL
+      // when the player has no measurable live-play delta.
+      sql<number | null>`(ARRAY_AGG(rolling.tick ORDER BY rolling.rolling_mean DESC NULLS LAST, rolling.tick))[1]`.as(
+        'tick',
+      ),
+      sql<
+        number | null
+      >`(ARRAY_AGG(rolling.round_number ORDER BY rolling.rolling_mean DESC NULLS LAST, rolling.tick))[1]`.as(
+        'roundNumber',
+      ),
     ])
     .groupBy(['rolling.player_steam_id', 'playerName'])
     .orderBy('rolling.player_steam_id')
@@ -89,6 +103,8 @@ export async function fetchSpinbotSuspicions(checksum: string): Promise<SpinbotS
       playerName: row.playerName,
       aliveTickCount: row.aliveTickCount,
       maxRollingMeanYawDelta,
+      tick: row.tick,
+      roundNumber: row.roundNumber,
       isFlagged,
     };
   });

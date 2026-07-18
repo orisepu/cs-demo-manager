@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { BombDefused } from 'csdm/common/types/bomb-defused';
 import type { BombPlanted } from 'csdm/common/types/bomb-planted';
@@ -104,6 +104,9 @@ export const ViewerContext = createContext<ViewerContext | undefined>(undefined)
 
 type Props = {
   children: ReactNode;
+  // Optional playhead tick to seed the viewer with, e.g. when jumping here from a detection row.
+  // When omitted the playhead starts at the round's freeze-time end tick as usual.
+  initialTick?: number;
   map: Map;
   kills: Kill[];
   round: Round;
@@ -132,6 +135,7 @@ type Props = {
 
 export function ViewerProvider({
   children,
+  initialTick,
   map,
   round,
   kills,
@@ -164,7 +168,7 @@ export function ViewerProvider({
   const [drawingTool, setDrawingTool] = useState<DrawingTool>('pen');
   const [drawingSize, setDrawingSize] = useState(2);
   const [drawingColor, setDrawingColor] = useState('#ff0000');
-  const [currentTick, setCurrentTick] = useState(round.freezetimeEndTick);
+  const [currentTick, setCurrentTick] = useState(initialTick ?? round.freezetimeEndTick);
   const [isPlaying, setIsPlaying] = useState(false);
   const [lowerRadarOffsetX, setLowerRadarOffsetX] = useState(() => {
     const value = window.localStorage.getItem(`${match.game}_${match.mapName}_lower_radar_offset_x`);
@@ -184,6 +188,15 @@ export function ViewerProvider({
   const shouldDrawBombs = isDefuseMapFromName(match.mapName);
   const navigate = useNavigate();
   const { audioOffsetSeconds, volume } = viewerState;
+
+  // Re-seek the playhead when a new target tick arrives while the viewer is already mounted.
+  // Clicking another detection row changes the route's round param (and the navigation state's
+  // tick) without remounting this provider, so the initial useState above would not pick it up.
+  useEffect(() => {
+    if (initialTick !== undefined) {
+      setCurrentTick(initialTick);
+    }
+  }, [initialTick]);
 
   const clampAudioTime = (seconds: number): number => {
     if (!audio || isNaN(audio.duration)) {

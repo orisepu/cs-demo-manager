@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Trans } from '@lingui/react/macro';
+import { useNavigate } from 'react-router';
 import { Content } from 'csdm/ui/components/content';
 import { useCurrentMatch } from 'csdm/ui/match/use-current-match';
 import { useWebSocketClient } from 'csdm/ui/hooks/use-web-socket-client';
@@ -9,14 +10,21 @@ import { Status } from 'csdm/common/types/status';
 import { Spinner } from 'csdm/ui/components/spinner';
 import { ErrorMessage } from 'csdm/ui/components/error-message';
 import { Message } from 'csdm/ui/components/message';
+import { Button } from 'csdm/ui/components/buttons/button';
 import type { AntiAimSuspicion } from 'csdm/common/types/anti-aim-suspicion';
 import { roundNumberPercentage } from 'csdm/common/math/round-number-percentage';
+import { buildMatch2dViewerRoundPath } from 'csdm/ui/routes-paths';
 
 export function AntiAim() {
   const client = useWebSocketClient();
   const match = useCurrentMatch();
+  const navigate = useNavigate();
   const [suspicions, setSuspicions] = useState<AntiAimSuspicion[]>([]);
   const [status, setStatus] = useState<Status>(Status.Loading);
+
+  const jumpToViewer = (roundNumber: number, tick: number) => {
+    void navigate(buildMatch2dViewerRoundPath(match.checksum, roundNumber), { state: { tick } });
+  };
 
   useEffect(() => {
     const fetchSuspicions = async () => {
@@ -50,7 +58,7 @@ export function AntiAim() {
     }
 
     return (
-      <div className="flex w-fit min-w-[520px] flex-col">
+      <div className="flex w-fit min-w-[640px] flex-col">
         <div className="flex border-b border-gray-300 pb-8 text-body-strong">
           <p className="w-[240px]">
             <Trans>Player</Trans>
@@ -61,10 +69,13 @@ export function AntiAim() {
           <p className="w-[140px] text-right">
             <Trans>Flagged</Trans>
           </p>
+          <p className="w-[120px]" />
         </div>
         {suspicions.map((suspicion) => {
+          const { tick, roundNumber } = suspicion;
+
           return (
-            <div key={suspicion.playerSteamId} className="flex border-b border-gray-200 py-8">
+            <div key={suspicion.playerSteamId} className="flex items-center border-b border-gray-200 py-8">
               <p className="w-[240px] selectable truncate" title={suspicion.playerName}>
                 {suspicion.playerName}
               </p>
@@ -78,6 +89,13 @@ export function AntiAim() {
               <p className={clsx('w-[140px] text-right', suspicion.isFlagged ? 'text-red-700' : 'text-gray-800')}>
                 {suspicion.isFlagged ? <Trans>Yes</Trans> : <Trans>No</Trans>}
               </p>
+              <div className="flex w-[120px] justify-end">
+                {tick !== null && roundNumber !== null && (
+                  <Button onClick={() => jumpToViewer(roundNumber, tick)}>
+                    <Trans>View in 2D</Trans>
+                  </Button>
+                )}
+              </div>
             </div>
           );
         })}
