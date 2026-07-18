@@ -18,6 +18,7 @@ export const RoutePath = {
   MatchSpinbot: 'spinbot',
   MatchAntiFlash: 'anti-flash',
   MatchSmokeTracking: 'smoke-tracking',
+  MatchAimToggle: 'aim-toggle',
   Analyses: '/analyses',
   Players: '/players',
   PlayerCharts: 'charts',
