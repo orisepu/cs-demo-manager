@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Content } from 'csdm/ui/components/content';
@@ -8,6 +8,11 @@ import { buildMatchPlayerPath } from 'csdm/ui/routes-paths';
 import { Avatar } from 'csdm/ui/components/avatar';
 import { TabLinks } from 'csdm/ui/components/tabs/tab-links';
 import { TabLink } from 'csdm/ui/components/tabs/tab-link';
+import { useWebSocketClient } from 'csdm/ui/hooks/use-web-socket-client';
+import { RendererClientMessageName } from 'csdm/server/renderer-client-message-name';
+import type { PlayerCheatFlags } from 'csdm/common/types/match-cheat-flags';
+import { ExclamationTriangleIcon } from 'csdm/ui/icons/exclamation-triangle-icon';
+import { Tooltip } from 'csdm/ui/components/tooltip';
 import { KillsPanel } from './kills-panel';
 import { MultiKillsPanel } from 'csdm/ui/components/panels/multi-kills-panel';
 import { KillDeathRatioPanel } from 'csdm/ui/components/panels/kill-death-ratio-panel';
@@ -27,9 +32,30 @@ import { WeaponInspectionsPanel } from 'csdm/ui/components/panels/weapon-inspect
 
 export function MatchPlayers() {
   const { t } = useLingui();
+  const client = useWebSocketClient();
   const match = useCurrentMatch();
   const { steamId } = useParams<{ steamId: string }>();
   const player = match.players.find((player) => player.steamId === steamId);
+  const [cheatFlagsBySteamId, setCheatFlagsBySteamId] = useState<Map<string, string[]>>(new Map());
+
+  useEffect(() => {
+    const fetchCheatFlags = async () => {
+      try {
+        const cheatFlags = await client.send({
+          name: RendererClientMessageName.FetchMatchCheatFlags,
+          payload: match.checksum,
+        });
+        const flagsBySteamId = new Map<string, string[]>(
+          cheatFlags.map((flags: PlayerCheatFlags) => [flags.steamId, flags.flaggedBy]),
+        );
+        setCheatFlagsBySteamId(flagsBySteamId);
+      } catch {
+        // Silently ignore: the cheat flag is a non-critical hint next to the player name.
+      }
+    };
+
+    void fetchCheatFlags();
+  }, [client, match.checksum]);
 
   if (player === undefined) {
     return <Message message={<Trans>Player not found.</Trans>} />;
@@ -42,11 +68,24 @@ export function MatchPlayers() {
     <>
       <TabLinks>
         {match.players.map((player) => {
+          const flaggedBy = cheatFlagsBySteamId.get(player.steamId);
+
           return (
             <TabLink key={player.steamId} url={buildMatchPlayerPath(match.checksum, player.steamId)}>
               <div className="flex items-center gap-x-4">
                 <Avatar avatarUrl={player.avatar} playerName={player.name} size={20} />
                 <p>{player.name}</p>
+                {flaggedBy !== undefined && flaggedBy.length > 0 && (
+                  <Tooltip
+                    content={
+                      <p>
+                        <Trans>Possible cheater</Trans>: {flaggedBy.join(', ')}
+                      </p>
+                    }
+                  >
+                    <ExclamationTriangleIcon className="size-16 text-red-700" />
+                  </Tooltip>
+                )}
               </div>
             </TabLink>
           );
