@@ -3797,6 +3797,7 @@ msgstr "Flagged"
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/detection-moments.tsx
 #: src/ui/match/smoke-tracking/smoke-tracking.tsx
 #: src/ui/match/spinbot/spinbot.tsx
 msgid "View in 2D"
@@ -3851,6 +3852,18 @@ msgstr "Chat messages are available with Valve demos only after the {updateDate}
 #: src/ui/match/chat-messages/empty-chat-messages.tsx
 msgid "No chat messages found."
 msgstr "No chat messages found."
+
+#: src/ui/match/detection-moments.tsx
+msgid "Hide moments"
+msgstr "Hide moments"
+
+#: src/ui/match/detection-moments.tsx
+msgid "Show moments"
+msgstr "Show moments"
+
+#: src/ui/match/detection-moments.tsx
+msgid "Only the first {MAX_DETECTION_MOMENTS} moments are shown."
+msgstr "Only the first {MAX_DETECTION_MOMENTS} moments are shown."
 
 #: src/ui/match/duels/match-duels.tsx
 msgctxt "Tab link"
