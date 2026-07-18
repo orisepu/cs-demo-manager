@@ -15,6 +15,7 @@ export const RendererClientMessageName = {
   Fetch2DViewerData: 'fetch-2d-viewer-data',
   FetchAntiAimSuspicions: 'fetch-anti-aim-suspicions',
   FetchSpinbotSuspicions: 'fetch-spinbot-suspicions',
+  FetchAntiFlashSuspicions: 'fetch-anti-flash-suspicions',
   UpdateComment: 'update-match-comment',
   UpdatePlayerComment: 'update-player-comment',
   UpdateRoundComment: 'update-round-comment',

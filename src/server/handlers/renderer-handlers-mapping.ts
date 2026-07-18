@@ -15,6 +15,8 @@ import { fetchAntiAimSuspicionsHandler } from './renderer-process/match/fetch-an
 import type { AntiAimSuspicion } from 'csdm/common/types/anti-aim-suspicion';
 import { fetchSpinbotSuspicionsHandler } from './renderer-process/match/fetch-spinbot-suspicions-handler';
 import type { SpinbotSuspicion } from 'csdm/common/types/spinbot-suspicion';
+import { fetchAntiFlashSuspicionsHandler } from './renderer-process/match/fetch-anti-flash-suspicions-handler';
+import type { AntiFlashSuspicion } from 'csdm/common/types/anti-flash-suspicion';
 import type {
   Fetch2dViewerDataPayload,
   Fetch2dViewerDataSuccessPayload,
@@ -309,6 +311,7 @@ export interface RendererMessageHandlers {
   [RendererClientMessageName.FetchMatchDuelsMatrixRows]: Handler<string, DuelMatrixRow[]>;
   [RendererClientMessageName.FetchAntiAimSuspicions]: Handler<string, AntiAimSuspicion[]>;
   [RendererClientMessageName.FetchSpinbotSuspicions]: Handler<string, SpinbotSuspicion[]>;
+  [RendererClientMessageName.FetchAntiFlashSuspicions]: Handler<string, AntiFlashSuspicion[]>;
   [RendererClientMessageName.FetchMatchGrenadesThrow]: Handler<string, GrenadeThrow[]>;
   [RendererClientMessageName.WatchDemo]: Handler<WatchDemoPayload, WatchDemoErrorPayload | undefined>;
   [RendererClientMessageName.StartCounterStrike]: Handler<
@@ -435,6 +438,7 @@ export const rendererHandlers: RendererMessageHandlers = {
   [RendererClientMessageName.FetchMatchDuelsMatrixRows]: fetchMatchDuelsMatrixRowsHandler,
   [RendererClientMessageName.FetchAntiAimSuspicions]: fetchAntiAimSuspicionsHandler,
   [RendererClientMessageName.FetchSpinbotSuspicions]: fetchSpinbotSuspicionsHandler,
+  [RendererClientMessageName.FetchAntiFlashSuspicions]: fetchAntiFlashSuspicionsHandler,
   [RendererClientMessageName.FetchMatchGrenadesThrow]: fetchMatchGrenadesThrowHandler,
   [RendererClientMessageName.StartCounterStrike]: startCounterStrikeHandler,
   [RendererClientMessageName.WatchDemo]: watchDemoHandler,
