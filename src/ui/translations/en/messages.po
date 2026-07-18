@@ -1476,6 +1476,7 @@ msgid "All"
 msgstr "All"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
@@ -1487,6 +1488,7 @@ msgid "Yes"
 msgstr "Yes"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
@@ -1513,6 +1515,7 @@ msgid "Opening duel result"
 msgstr "Opening duel result"
 
 #: src/ui/components/inputs/select/perspective-select.tsx
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
@@ -3761,31 +3764,39 @@ msgctxt "Tooltip"
 msgid "Videos"
 msgstr "Videos"
 
-#: src/ui/match/aim-toggle/aim-toggle.tsx
-msgid "An error occurred while fetching aim-toggle suspicions."
-msgstr "An error occurred while fetching aim-toggle suspicions."
+#: src/ui/match/aim-outlier/aim-outlier.tsx
+msgid "An error occurred while fetching aim-outlier suspicions."
+msgstr "An error occurred while fetching aim-outlier suspicions."
 
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
 msgid "No kill data found for this match."
 msgstr "No kill data found for this match."
 
-#: src/ui/match/aim-toggle/aim-toggle.tsx
-msgid "Statistical triage signal, not proof: it flags a mediocre overall headshot rate paired with an isolated near-perfect round, a shape consistent with toggling a headshot aimbot on and off. Review the flagged round before drawing any conclusion."
-msgstr "Statistical triage signal, not proof: it flags a mediocre overall headshot rate paired with an isolated near-perfect round, a shape consistent with toggling a headshot aimbot on and off. Review the flagged round before drawing any conclusion."
+#: src/ui/match/aim-outlier/aim-outlier.tsx
+msgid "Statistical triage signal, not proof: it flags a player whose overall headshot rate or shooting accuracy is a strong outlier compared with the other players in the same match. The baseline is the match median, so an elite legit player can be a genuine outlier. Review the flagged rounds before drawing any conclusion."
+msgstr "Statistical triage signal, not proof: it flags a player whose overall headshot rate or shooting accuracy is a strong outlier compared with the other players in the same match. The baseline is the match median, so an elite legit player can be a genuine outlier. Review the flagged rounds before drawing any conclusion."
 
+#: src/ui/match/aim-outlier/aim-outlier.tsx
+msgid "HS %"
+msgstr "HS %"
+
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 msgid "Baseline HS %"
 msgstr "Baseline HS %"
 
-#: src/ui/match/aim-toggle/aim-toggle.tsx
-msgid "Hot round"
-msgstr "Hot round"
+#: src/ui/match/aim-outlier/aim-outlier.tsx
+msgid "Accuracy %"
+msgstr "Accuracy %"
 
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
-msgid "Hot round HS %"
-msgstr "Hot round HS %"
+msgid "Baseline acc %"
+msgstr "Baseline acc %"
 
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
@@ -3794,6 +3805,7 @@ msgstr "Hot round HS %"
 msgid "Flagged"
 msgstr "Flagged"
 
+#: src/ui/match/aim-outlier/aim-outlier.tsx
 #: src/ui/match/aim-toggle/aim-toggle.tsx
 #: src/ui/match/anti-aim/anti-aim.tsx
 #: src/ui/match/anti-flash/anti-flash.tsx
@@ -3802,6 +3814,22 @@ msgstr "Flagged"
 #: src/ui/match/spinbot/spinbot.tsx
 msgid "View in 2D"
 msgstr "View in 2D"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "An error occurred while fetching aim-toggle suspicions."
+msgstr "An error occurred while fetching aim-toggle suspicions."
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Statistical triage signal, not proof: it flags a mediocre overall headshot rate OR accuracy paired with an isolated near-perfect round, a shape consistent with toggling an aimbot on and off (headshot or body aim). Review the flagged round before drawing any conclusion."
+msgstr "Statistical triage signal, not proof: it flags a mediocre overall headshot rate OR accuracy paired with an isolated near-perfect round, a shape consistent with toggling an aimbot on and off (headshot or body aim). Review the flagged round before drawing any conclusion."
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Hot round HS %"
+msgstr "Hot round HS %"
+
+#: src/ui/match/aim-toggle/aim-toggle.tsx
+msgid "Hot round acc %"
+msgstr "Hot round acc %"
 
 #: src/ui/match/anti-aim/anti-aim.tsx
 msgid "An error occurred while fetching anti-aim suspicions."
@@ -4382,6 +4410,11 @@ msgstr "Smoke tracking"
 msgctxt "Tab link"
 msgid "Aim toggle"
 msgstr "Aim toggle"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Aim outlier"
+msgstr "Aim outlier"
 
 #: src/ui/match/match-tabs.tsx
 msgctxt "Tab link"
