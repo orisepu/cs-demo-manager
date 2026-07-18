@@ -11,16 +11,16 @@ import { Spinner } from 'csdm/ui/components/spinner';
 import { ErrorMessage } from 'csdm/ui/components/error-message';
 import { Message } from 'csdm/ui/components/message';
 import { Button } from 'csdm/ui/components/buttons/button';
-import type { AimToggleSuspicion } from 'csdm/common/types/aim-toggle-suspicion';
+import type { AimOutlierSuspicion } from 'csdm/common/types/aim-outlier-suspicion';
 import { roundNumberPercentage } from 'csdm/common/math/round-number-percentage';
 import { buildMatch2dViewerRoundPath } from 'csdm/ui/routes-paths';
 import { DetectionMoments } from 'csdm/ui/match/detection-moments';
 
-export function AimToggle() {
+export function AimOutlier() {
   const client = useWebSocketClient();
   const match = useCurrentMatch();
   const navigate = useNavigate();
-  const [suspicions, setSuspicions] = useState<AimToggleSuspicion[]>([]);
+  const [suspicions, setSuspicions] = useState<AimOutlierSuspicion[]>([]);
   const [status, setStatus] = useState<Status>(Status.Loading);
 
   const jumpToViewer = (roundNumber: number, tick: number) => {
@@ -32,7 +32,7 @@ export function AimToggle() {
       try {
         setStatus(Status.Loading);
         const result = await client.send({
-          name: RendererClientMessageName.FetchAimToggleSuspicions,
+          name: RendererClientMessageName.FetchAimOutlierSuspicions,
           payload: match.checksum,
         });
         setSuspicions(result);
@@ -47,7 +47,7 @@ export function AimToggle() {
 
   const renderContent = () => {
     if (status === Status.Error) {
-      return <ErrorMessage message={<Trans>An error occurred while fetching aim-toggle suspicions.</Trans>} />;
+      return <ErrorMessage message={<Trans>An error occurred while fetching aim-outlier suspicions.</Trans>} />;
     }
 
     if (status === Status.Loading) {
@@ -62,27 +62,27 @@ export function AimToggle() {
       <div className="flex flex-col gap-12">
         <p className="max-w-[720px] text-body text-gray-800">
           <Trans>
-            Statistical triage signal, not proof: it flags a mediocre overall headshot rate OR accuracy paired with an
-            isolated near-perfect round, a shape consistent with toggling an aimbot on and off (headshot or body aim).
-            Review the flagged round before drawing any conclusion.
+            Statistical triage signal, not proof: it flags a player whose overall headshot rate or shooting accuracy is
+            a strong outlier compared with the other players in the same match. The baseline is the match median, so an
+            elite legit player can be a genuine outlier. Review the flagged rounds before drawing any conclusion.
           </Trans>
         </p>
-        <div className="flex w-fit min-w-[1080px] flex-col">
+        <div className="flex w-fit min-w-[900px] flex-col">
           <div className="flex border-b border-gray-300 pb-8 text-body-strong">
             <p className="w-[220px]">
               <Trans>Player</Trans>
             </p>
             <p className="w-[140px] text-right">
+              <Trans>HS %</Trans>
+            </p>
+            <p className="w-[140px] text-right">
               <Trans>Baseline HS %</Trans>
             </p>
             <p className="w-[140px] text-right">
-              <Trans>Hot round HS %</Trans>
+              <Trans>Accuracy %</Trans>
             </p>
             <p className="w-[140px] text-right">
               <Trans>Baseline acc %</Trans>
-            </p>
-            <p className="w-[140px] text-right">
-              <Trans>Hot round acc %</Trans>
             </p>
             <p className="w-[100px] text-right">
               <Trans>Flagged</Trans>
@@ -98,21 +98,25 @@ export function AimToggle() {
                   <p className="w-[220px] selectable truncate" title={suspicion.playerName}>
                     {suspicion.playerName}
                   </p>
+                  <p
+                    className={clsx('w-[140px] selectable text-right', {
+                      'text-red-700': suspicion.isHeadshotOutlier,
+                    })}
+                  >
+                    {roundNumberPercentage(suspicion.headshotRate, 1)}%
+                  </p>
                   <p className="w-[140px] selectable text-right text-gray-800">
                     {roundNumberPercentage(suspicion.baselineHeadshotRate, 1)}%
                   </p>
-                  <p className="w-[140px] selectable text-right text-gray-800">
-                    {suspicion.hotRoundNumber === null
-                      ? '-'
-                      : `${roundNumberPercentage(suspicion.hotRoundHeadshotRate, 1)}%`}
+                  <p
+                    className={clsx('w-[140px] selectable text-right', {
+                      'text-red-700': suspicion.isAccuracyOutlier,
+                    })}
+                  >
+                    {roundNumberPercentage(suspicion.accuracy, 1)}%
                   </p>
                   <p className="w-[140px] selectable text-right text-gray-800">
                     {roundNumberPercentage(suspicion.baselineAccuracy, 1)}%
-                  </p>
-                  <p className="w-[140px] selectable text-right text-gray-800">
-                    {suspicion.hotAccuracyRoundNumber === null
-                      ? '-'
-                      : `${roundNumberPercentage(suspicion.hotRoundAccuracy, 1)}%`}
                   </p>
                   <p className={clsx('w-[100px] text-right', suspicion.isFlagged ? 'text-red-700' : 'text-gray-800')}>
                     {suspicion.isFlagged ? <Trans>Yes</Trans> : <Trans>No</Trans>}

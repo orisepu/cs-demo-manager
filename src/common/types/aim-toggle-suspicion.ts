@@ -13,8 +13,15 @@ export type AimToggleSuspicion = {
   // qualifying round.
   hotRoundNumber: number | null;
   hotRoundHeadshotRate: number;
-  // Representative moment = a headshot kill in the hottest qualifying round, so the UI can jump the
-  // 2D viewer straight to it. Null when there is no qualifying round with a headshot kill.
+  // Overall match accuracy (landing shots / shots) and the hottest qualifying accuracy round, the
+  // second independent trigger that catches a body-aimbot toggle. Null/0 when the player has no
+  // qualifying accuracy round.
+  baselineAccuracy: number;
+  hotAccuracyRoundNumber: number | null;
+  hotRoundAccuracy: number;
+  // Representative moment = a headshot kill in the hottest qualifying round (or the first shot of the
+  // hot accuracy round when the flag is accuracy-only), so the UI can jump the 2D viewer straight to
+  // it. Null when there is no qualifying round.
   tick: number | null;
   // Mirrors the other detectors' viewer-jump contract; equals hotRoundNumber (the round to open).
   roundNumber: number | null;

@@ -9,7 +9,10 @@
 // plus one isolated near-perfect round) is consistent with toggling a headshot aimbot on and off,
 // but a single genuinely lucky round can produce the same shape. Pending ban-data calibration it is
 // a review hint only.
-export const TRIAGE_DETECTORS = ['aim-toggle'] as const;
+// `aim-outlier` is triage-grade: a strong headshot-rate or accuracy outlier versus the match median
+// is consistent with an aimbot, but an elite legit player can produce the same statistical shape.
+// Pending ban-data calibration it is a review hint only.
+export const TRIAGE_DETECTORS = ['aim-toggle', 'aim-outlier'] as const;
 
 export type TriageDetectorId = (typeof TRIAGE_DETECTORS)[number];
 

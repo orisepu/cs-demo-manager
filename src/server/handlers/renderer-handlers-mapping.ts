@@ -21,6 +21,8 @@ import { fetchSmokeTrackingSuspicionsHandler } from './renderer-process/match/fe
 import type { SmokeTrackingSuspicion } from 'csdm/common/types/smoke-tracking-suspicion';
 import { fetchAimToggleSuspicionsHandler } from './renderer-process/match/fetch-aim-toggle-suspicions-handler';
 import type { AimToggleSuspicion } from 'csdm/common/types/aim-toggle-suspicion';
+import { fetchAimOutlierSuspicionsHandler } from './renderer-process/match/fetch-aim-outlier-suspicions-handler';
+import type { AimOutlierSuspicion } from 'csdm/common/types/aim-outlier-suspicion';
 import { fetchMatchCheatFlagsHandler } from './renderer-process/match/fetch-match-cheat-flags-handler';
 import type { PlayerCheatFlags } from 'csdm/common/types/match-cheat-flags';
 import type {
@@ -320,6 +322,7 @@ export interface RendererMessageHandlers {
   [RendererClientMessageName.FetchAntiFlashSuspicions]: Handler<string, AntiFlashSuspicion[]>;
   [RendererClientMessageName.FetchSmokeTrackingSuspicions]: Handler<string, SmokeTrackingSuspicion[]>;
   [RendererClientMessageName.FetchAimToggleSuspicions]: Handler<string, AimToggleSuspicion[]>;
+  [RendererClientMessageName.FetchAimOutlierSuspicions]: Handler<string, AimOutlierSuspicion[]>;
   [RendererClientMessageName.FetchMatchCheatFlags]: Handler<string, PlayerCheatFlags[]>;
   [RendererClientMessageName.FetchMatchGrenadesThrow]: Handler<string, GrenadeThrow[]>;
   [RendererClientMessageName.WatchDemo]: Handler<WatchDemoPayload, WatchDemoErrorPayload | undefined>;
@@ -450,6 +453,7 @@ export const rendererHandlers: RendererMessageHandlers = {
   [RendererClientMessageName.FetchAntiFlashSuspicions]: fetchAntiFlashSuspicionsHandler,
   [RendererClientMessageName.FetchSmokeTrackingSuspicions]: fetchSmokeTrackingSuspicionsHandler,
   [RendererClientMessageName.FetchAimToggleSuspicions]: fetchAimToggleSuspicionsHandler,
+  [RendererClientMessageName.FetchAimOutlierSuspicions]: fetchAimOutlierSuspicionsHandler,
   [RendererClientMessageName.FetchMatchCheatFlags]: fetchMatchCheatFlagsHandler,
   [RendererClientMessageName.FetchMatchGrenadesThrow]: fetchMatchGrenadesThrowHandler,
   [RendererClientMessageName.StartCounterStrike]: startCounterStrikeHandler,

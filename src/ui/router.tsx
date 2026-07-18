@@ -28,6 +28,7 @@ import { Spinbot } from 'csdm/ui/match/spinbot/spinbot';
 import { AntiFlash } from 'csdm/ui/match/anti-flash/anti-flash';
 import { SmokeTracking } from 'csdm/ui/match/smoke-tracking/smoke-tracking';
 import { AimToggle } from 'csdm/ui/match/aim-toggle/aim-toggle';
+import { AimOutlier } from 'csdm/ui/match/aim-outlier/aim-outlier';
 import { Weapons } from 'csdm/ui/match/weapons/weapons';
 import { LastMatchesLoader as ValveLastMatchesLoader } from 'csdm/ui/downloads/valve/last-matches-loader';
 import { PendingDownloads } from 'csdm/ui/downloads/pending/pending-downloads';
@@ -96,6 +97,7 @@ export const router = createHashRouter(
         <Route path={RoutePath.MatchAntiFlash} element={<AntiFlash />} />
         <Route path={RoutePath.MatchSmokeTracking} element={<SmokeTracking />} />
         <Route path={RoutePath.MatchAimToggle} element={<AimToggle />} />
+        <Route path={RoutePath.MatchAimOutlier} element={<AimOutlier />} />
       </Route>
       <Route path={RoutePath.Demos} element={<Demos />} />
       <Route path={`${RoutePath.Demos}/:path`} element={<DemoLoader />} />

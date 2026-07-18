@@ -3,6 +3,7 @@ import { fetchSpinbotSuspicions } from 'csdm/node/database/spinbot/fetch-spinbot
 import { fetchAntiFlashSuspicions } from 'csdm/node/database/anti-flash/fetch-anti-flash-suspicions';
 import { fetchSmokeTrackingSuspicions } from 'csdm/node/database/smoke-tracking/fetch-smoke-tracking-suspicions';
 import { fetchAimToggleSuspicions } from 'csdm/node/database/aim-toggle/fetch-aim-toggle-suspicions';
+import { fetchAimOutlierSuspicions } from 'csdm/node/database/aim-outlier/fetch-aim-outlier-suspicions';
 import type { PlayerCheatFlags } from 'csdm/common/types/match-cheat-flags';
 import { isTriageDetector } from './triage-detectors';
 
@@ -15,6 +16,7 @@ const DETECTOR = {
   antiFlash: { id: 'anti-flash', name: 'Anti-flash' },
   smokeTracking: { id: 'smoke-tracking', name: 'Smoke tracking' },
   aimToggle: { id: 'aim-toggle', name: 'Aim toggle' },
+  aimOutlier: { id: 'aim-outlier', name: 'Aim outlier' },
 } as const;
 
 type Detector = (typeof DETECTOR)[keyof typeof DETECTOR];
@@ -30,14 +32,21 @@ type FlaggableSuspicion = {
 // proof-grade detectors are listed before triage-grade ones (statistical review hints such as
 // aim-toggle) so the strongest signals read first.
 export async function fetchMatchCheatFlags(checksum: string): Promise<PlayerCheatFlags[]> {
-  const [antiAimSuspicions, spinbotSuspicions, antiFlashSuspicions, smokeTrackingSuspicions, aimToggleSuspicions] =
-    await Promise.all([
-      fetchAntiAimSuspicions(checksum),
-      fetchSpinbotSuspicions(checksum),
-      fetchAntiFlashSuspicions(checksum),
-      fetchSmokeTrackingSuspicions(checksum),
-      fetchAimToggleSuspicions(checksum),
-    ]);
+  const [
+    antiAimSuspicions,
+    spinbotSuspicions,
+    antiFlashSuspicions,
+    smokeTrackingSuspicions,
+    aimToggleSuspicions,
+    aimOutlierSuspicions,
+  ] = await Promise.all([
+    fetchAntiAimSuspicions(checksum),
+    fetchSpinbotSuspicions(checksum),
+    fetchAntiFlashSuspicions(checksum),
+    fetchSmokeTrackingSuspicions(checksum),
+    fetchAimToggleSuspicions(checksum),
+    fetchAimOutlierSuspicions(checksum),
+  ]);
 
   const flaggedDetectorsBySteamId = new Map<string, Detector[]>();
 
@@ -61,6 +70,7 @@ export async function fetchMatchCheatFlags(checksum: string): Promise<PlayerChea
   collect(antiFlashSuspicions, DETECTOR.antiFlash);
   collect(smokeTrackingSuspicions, DETECTOR.smokeTracking);
   collect(aimToggleSuspicions, DETECTOR.aimToggle);
+  collect(aimOutlierSuspicions, DETECTOR.aimOutlier);
 
   const cheatFlags: PlayerCheatFlags[] = [];
   for (const [steamId, detectors] of flaggedDetectorsBySteamId) {

@@ -81,6 +81,9 @@ export function MatchTabs() {
       <TabLink url={RoutePath.MatchAimToggle}>
         <Trans context="Tab link">Aim toggle</Trans>
       </TabLink>
+      <TabLink url={RoutePath.MatchAimOutlier}>
+        <Trans context="Tab link">Aim outlier</Trans>
+      </TabLink>
       <TabLink url={RoutePath.Match2dViewer} end={false}>
         <Trans context="Tab link">2D viewer</Trans>
       </TabLink>
