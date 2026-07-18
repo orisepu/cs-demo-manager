@@ -1476,12 +1476,20 @@ msgid "All"
 msgstr "All"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
 #: src/ui/settings/ui/system-startup-behavior.tsx
 #: src/ui/videos/video-entry.tsx
 msgid "Yes"
 msgstr "Yes"
 
 #: src/ui/components/inputs/radio/radio-group-tri-state.tsx
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
 #: src/ui/settings/ui/system-startup-behavior.tsx
 #: src/ui/videos/video-entry.tsx
 msgid "No"
@@ -1503,6 +1511,10 @@ msgid "Opening duel result"
 msgstr "Opening duel result"
 
 #: src/ui/components/inputs/select/perspective-select.tsx
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
 msgid "Player"
 msgstr "Player"
 
@@ -3746,6 +3758,49 @@ msgctxt "Tooltip"
 msgid "Videos"
 msgstr "Videos"
 
+#: src/ui/match/anti-aim/anti-aim.tsx
+msgid "An error occurred while fetching anti-aim suspicions."
+msgstr "An error occurred while fetching anti-aim suspicions."
+
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "No player position data found for this match."
+msgstr "No player position data found for this match."
+
+#: src/ui/match/anti-aim/anti-aim.tsx
+msgid "Suspicious ticks %"
+msgstr "Suspicious ticks %"
+
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "Flagged"
+msgstr "Flagged"
+
+#: src/ui/match/anti-aim/anti-aim.tsx
+#: src/ui/match/anti-flash/anti-flash.tsx
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "View in 2D"
+msgstr "View in 2D"
+
+#: src/ui/match/anti-flash/anti-flash.tsx
+msgid "An error occurred while fetching anti-flash suspicions."
+msgstr "An error occurred while fetching anti-flash suspicions."
+
+#: src/ui/match/anti-flash/anti-flash.tsx
+msgid "No kill data found for this match."
+msgstr "No kill data found for this match."
+
+#: src/ui/match/anti-flash/anti-flash.tsx
+msgid "Flashed kills"
+msgstr "Flashed kills"
+
+#: src/ui/match/anti-flash/anti-flash.tsx
+msgid "Max flash at kill (s)"
+msgstr "Max flash at kill (s)"
+
 #: src/ui/match/chat-messages/chat-message.tsx
 msgctxt "Chat message status"
 msgid "*DEAD*"
@@ -4263,6 +4318,26 @@ msgstr "Grenades"
 msgctxt "Tab link"
 msgid "Economy"
 msgstr "Economy"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Anti-aim"
+msgstr "Anti-aim"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Spinbot"
+msgstr "Spinbot"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Anti-flash"
+msgstr "Anti-flash"
+
+#: src/ui/match/match-tabs.tsx
+msgctxt "Tab link"
+msgid "Smoke tracking"
+msgstr "Smoke tracking"
 
 #: src/ui/match/match-tabs.tsx
 msgctxt "Tab link"
@@ -4980,6 +5055,26 @@ msgstr "Round number {roundNumber} not found."
 #: src/ui/match/rounds/rounds-navigation-bar.tsx
 msgid "Overview"
 msgstr "Overview"
+
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+msgid "An error occurred while fetching smoke-tracking suspicions."
+msgstr "An error occurred while fetching smoke-tracking suspicions."
+
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+msgid "No position data found for this match."
+msgstr "No position data found for this match."
+
+#: src/ui/match/smoke-tracking/smoke-tracking.tsx
+msgid "Smoke-tracking windows"
+msgstr "Smoke-tracking windows"
+
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "An error occurred while fetching spinbot suspicions."
+msgstr "An error occurred while fetching spinbot suspicions."
+
+#: src/ui/match/spinbot/spinbot.tsx
+msgid "Max yaw rotation (°/tick)"
+msgstr "Max yaw rotation (°/tick)"
 
 #: src/ui/match/video/add-video-to-queue-button.tsx
 msgid "Disk space warning"
